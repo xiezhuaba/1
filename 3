@@ -1,0 +1,179 @@
+#include<stdio.h>
+#include<string>
+#include<fstream>
+#include<list>
+#include<iostream>
+#include<algorithm>
+using namespace std;
+class People
+{
+	public:
+		string name;  //名字 
+		list<string> phones;  //电话 
+		string email;  //电子邮箱 
+		string adress;
+		string qq;
+		char first_alpha; //首字母 
+		void print()
+		{
+			cout<<"名字:"<<name<<endl;
+			cout<<"电话号:"<<endl;
+			for(string now : phones)
+			{
+				cout<<now<<endl;
+			} 
+			cout<<"电子邮箱:"<<email<<endl;
+			cout<<"地址:"<<adress<<endl;
+			cout<<"qq:"<<qq<<endl;
+		}
+};
+class PhoneManager
+{
+	public:
+		list <People> peoples;
+		void insert()
+		{
+			People temp;
+			string phone;
+			cout<<"请输入联系人姓名:"<<endl;
+			cin>>temp.name; 
+			cout<<"请输入联系人姓名首字母(小写):"<<endl;
+			cin>>temp.first_alpha; 
+			cout<<"请输入联系人电话:"<<endl;
+			cin>>phone; 
+			cout<<"请输入联系人电子邮箱:"<<endl;
+			cin>>temp.email; 
+			cout<<"请输入联系人地址:"<<endl;
+			cin>>temp.adress; 
+			cout<<"请输入联系人qq:"<<endl;
+			cin>>temp.qq; 
+			int flag = 0 ;
+			for(People& now : peoples)
+			{
+				if(now.name == temp.name)
+				{
+					flag = 1;
+					now.phones.push_back(phone);
+					break;
+				}
+			}
+			if(flag == 0)
+			{
+				temp.phones.push_back(phone);
+				peoples.push_back(temp);
+			}
+			cout<<"插入成功"<<endl;
+		};
+		void query()
+		{
+			string input;
+			cout<<"请输入要查询的联系人姓名"<<endl;
+			cin>>input;
+			for(People now : peoples)
+			{
+				if(now.name == input)
+				{
+					now.print();
+				}
+			}
+			cout<<"查询成功"<<endl; 
+		}
+		void show_all_people()
+		{
+			for(int i = 'a'; i <= 'z'; i++)
+			{
+				cout<<(char)i<<":"<<endl;
+				for(People now : peoples)
+				{
+					if(now.first_alpha == (char) i)
+					{
+						now.print();
+					}
+				}
+				cout<<endl;
+			} 
+		}
+		void read()
+		{
+			ifstream fin;
+			fin.open("phones.txt");
+			while(fin.peek() != EOF)
+			{
+				People temp;
+				string phone;
+				fin>>temp.name>>temp.first_alpha>>phone>>temp.email>>temp.adress>>temp.qq;
+				int flag = 0 ;
+				for(People& now : peoples)
+				{
+					if(now.name == temp.name)
+					{
+						flag = 1;
+						now.phones.push_back(phone);
+						break;
+					}
+				}
+				if(flag == 0)
+				{
+					temp.phones.push_back(phone);
+					peoples.push_back(temp);
+				}
+				fin.get();
+				
+			}
+			fin.close();
+			cout<<"读取成功"<<endl;
+		}
+		void save()
+		{
+			ofstream fout;
+			fout.open("phones.txt");
+			for(People now : peoples)
+			{
+				for(string phone : now.phones)
+				{
+					fout<<now.name<<" "<<now.first_alpha<<" "<<phone<<" "<<now.email<<" "<<now.adress<<" "<<now.qq<<endl;
+				}
+			}
+			cout<<"保存成功"<<endl; 
+		}
+};
+int main()
+{
+	int inputSelect;
+	PhoneManager phoneManager;
+	while(true)
+	{
+		system("cls");
+		cout<<"1.添加联系人"<<endl;
+		cout<<"2.查询联系人"<<endl;
+		cout<<"3.按字母显示"<<endl; 
+		cout<<"4.从文件导入"<<endl;
+		cout<<"5.退出并保存"<<endl;
+		cin>>inputSelect;
+		switch(inputSelect)
+		{
+			case 1:
+				phoneManager.insert();
+				break;
+			case 2:
+				phoneManager.query();
+				break;
+			case 3:
+				phoneManager.show_all_people();
+				break;
+			case 4:
+				phoneManager.read();
+				break;
+			case 5:
+				phoneManager.save();
+				return 0;
+				break;
+		 
+		 } 
+		 system("pause");
+	}
+	
+	
+	
+	return 0 ;
+ } 
